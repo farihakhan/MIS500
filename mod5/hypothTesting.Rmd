@@ -1,0 +1,51 @@
+---
+title: "Module 5 - Hollywood’s Most Profitable Stories"
+author: 'Fariha Khan'
+date: "August 25 2019"
+output: 
+  html_document: 
+    number_sections: yes
+    toc: yes
+    toc_float: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Introduction
+This analysis explores Hollywood's Most Profitable Stories dataset to conduct statistical hypothesis testing.
+
+Data was loaded downloaded from the sample data available on https://public.tableau.com/en-us/s/resources.
+
+
+Use the following packages for hypothesis testing:
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(ggpubr))
+```
+
+
+Read in data
+```{r}
+df <- read.csv("~/Documents/MS_DataScience/MIS500/Week5/data/HollywoodsMostProfitableStories.csv")
+glimpse(df)
+```
+
+Clean up dataset
+
+ - Clean column
+
+ - Remove NA
+ 
+```{r}
+names(df)
+df <- df %>% 
+      rename(Audience.score = Audience..score.., 
+             Rotten.Tomatoes = Rotten.Tomatoes..) %>% 
+      na.omit()
+glimpse(df)
+```
+
