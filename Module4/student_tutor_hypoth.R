@@ -53,7 +53,8 @@ score_data %>%
                 min = min(scores, na.rm = TRUE),
                 mean = mean(scores, na.rm = TRUE),
                 max = max(scores, na.rm = TRUE),
-                sd = sd(scores,na.rm = TRUE))
+                sd = sd(scores,na.rm = TRUE)) %>% 
+      ggplot()
 
 
 summary(score_data$group)
@@ -71,7 +72,7 @@ summary(score_data$group)
 ttest_twosample <- t.test(tScore_before, tScore_after, var.equal = TRUE)
 
 ttest_twosample
-
+twotest <- as.data.frame(unlist(ttest_twosample))
 
 
 # Compute independent t-test
