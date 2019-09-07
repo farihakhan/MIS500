@@ -1,12 +1,16 @@
 ---
 title: "Module 5 - Hollywood’s Most Profitable Stories"
-author: 'Fariha Khan'
+author: "Fariha Khan"
 date: "August 25 2019"
-output: 
-  html_document: 
+output:
+  html_document:
     number_sections: yes
     toc: yes
-    toc_float: true
+    toc_float: yes
+  word_document:
+    toc: yes
+editor_options:
+  chunk_output_type: console
 ---
 
 
@@ -25,6 +29,7 @@ Use the following packages for hypothesis testing:
 ```{r}
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(ggpubr))
+suppressPackageStartupMessages(library(knitr))
 ```
 
 
@@ -44,8 +49,73 @@ Clean up dataset
 names(df)
 df <- df %>% 
       rename(Audience.score = Audience..score.., 
-             Rotten.Tomatoes = Rotten.Tomatoes..) %>% 
+             Rotten.Tomatoes = Rotten.Tomatoes..) %>%
+      mutate(Film = as.character(Film)) %>% 
       na.omit()
 glimpse(df)
+```
+
+
+# Preliminary Testing
+
+Check distribution of variables
+
+```{r densityplots, echo=TRUE}
+xdens <- ggdensity(df, x = "Audience.score",add = "mean", 
+                   title = "Audience Score Density") +
+      stat_overlay_normal_density(color = "red", linetype = "dashed")
+
+ydens <- ggdensity(df, x = "Worldwide.Gross", add = "mean", 
+                   title = "Worldwide Gross Density") +
+      stat_overlay_normal_density(color = "blue", linetype = "dashed")
+
+ggarrange(xdens, ydens, labels = "AUTO")
+```
+
+
+Do Shapiro-Wilk normality test and draw quantile-quantile plots
+
+```{r normalityTest}
+xshap <- shapiro.test(df$Audience.score) %>% 
+      unlist() %>% t() %>% as.data.frame()
+xshap <- xshap[2]
+xshap <- ggtexttable(xshap, cols = colnames(xshap))
+xq <- ggqqplot(df$Audience.score, color = "red", size = 1, shape = 1,
+               ylab = "Audience Score (%)")
+
+yshap <- shapiro.test(df$Worldwide.Gross) %>% 
+      unlist() %>% t() %>% as.data.frame()
+yshap <- yshap[2]
+yshap <- ggtexttable(yshap, cols = colnames(yshap))
+yq <- ggqqplot(df$Worldwide.Gross, color = "blue", size = 1, 
+               shape = 1, ylab = "Worldwide Gross")
+ggarrange(xshap, yshap, xq, yq, 
+          ncol = 2, nrow = 2, heights = c(1, 3), labels = c("A", "B"))
+```
+
+
+# Correlation tests
+```{r scatterplots}
+
+ggscatter(df, x = "Audience.score", y = "Worldwide.Gross", 
+          add = "reg.line", conf.int = TRUE, cor.coef = TRUE, 
+          title = "Audience Score vs. Worldwide Gross",
+          cor.method = "spearman")
+
+ggscatter(df, x = "Audience.score", y = "Worldwide.Gross", 
+          add = "reg.line", conf.int = TRUE,
+          cor.coef = TRUE, cor.method = "kendall",
+          title = "Audience Score vs. Worldwide Gross")
+
+ggarrange(spear, kend, labels = c("Spearman", "Kendall"), hjust = -1)
+```
+
+```{r}
+
+x <- cor.test(x = df$Audience.score, y = df$Worldwide.Gross,
+          method = "spearman", alternative = 'greater')
+
+cor.test(x = df$Audience.score, y = df$Worldwide.Gross,
+          method = "kendall")
 ```
 
