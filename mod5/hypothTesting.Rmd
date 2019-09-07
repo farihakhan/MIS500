@@ -2,15 +2,7 @@
 title: "Module 5 - Hollywood’s Most Profitable Stories"
 author: "Fariha Khan"
 date: "August 25 2019"
-output:
-  html_document:
-    number_sections: yes
-    toc: yes
-    toc_float: yes
-  word_document:
-    toc: yes
-editor_options:
-  chunk_output_type: console
+output: github_document
 ---
 
 
@@ -107,7 +99,6 @@ ggscatter(df, x = "Audience.score", y = "Worldwide.Gross",
           cor.coef = TRUE, cor.method = "kendall",
           title = "Audience Score vs. Worldwide Gross")
 
-ggarrange(spear, kend, labels = c("Spearman", "Kendall"), hjust = -1)
 ```
 
 ```{r}
